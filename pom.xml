@@ -4,8 +4,8 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>cc</groupId>
-    <artifactId>cc</artifactId>
+    <groupId>max_flow</groupId>
+    <artifactId>max_flow</artifactId>
     <version>1.0</version>
 
     <properties>
@@ -40,13 +40,6 @@
             <version>${neo4j.version}</version>
             <type>test-jar</type>
         </dependency>
-        <dependency>
-            <groupId>org.neo4j.app</groupId>
-            <artifactId>neo-graph-algo</artifactId>
-            <version>${neo4j.version}</version>
-            <type>test-jar</type>
-        </dependency>
-
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
