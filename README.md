@@ -7,7 +7,7 @@ This is an unmanaged extension that return the Max Flow of a graph.
 
         mvn clean package
 
-2. Copy target/unmanaged-extension-template-1.0.jar to the plugins/ directory of your Neo4j server.
+2. Copy target/max_flow-1.0.jar to the plugins/ directory of your Neo4j server.
 
 3. Configure Neo4j by adding a line to conf/neo4j-server.properties:
 
