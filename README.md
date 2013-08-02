@@ -1,7 +1,7 @@
-Neo4j Connected Components
+Neo4j Max Flow
 ================================
 
-This is an unmanaged extension that labels the connected components of a graph.
+This is an unmanaged extension that return the Max Flow of a graph.
 
 1. Build it: 
 
@@ -11,13 +11,13 @@ This is an unmanaged extension that labels the connected components of a graph.
 
 3. Configure Neo4j by adding a line to conf/neo4j-server.properties:
 
-        org.neo4j.server.thirdparty_jaxrs_classes=org.neo4j.cc=/ext
+        org.neo4j.server.thirdparty_jaxrs_classes=org.neo4j.max_flow=/ext
 
 4. Start Neo4j server.
 
 5. Query it over HTTP:
 
-        curl http://localhost:7474/ext/service/cc/KNOWS
-        or in the http console: get /ext/service/cc/KNOWS
+        curl http://localhost:7474/ext/service/max_flow/1/7
+        or in the http console: get /ext/service/max_flow/1/7
 
 

@@ -1,4 +1,4 @@
-package org.neo4j.cc;
+package org.neo4j.max_flow;
 
 import com.sun.jersey.api.client.Client;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -24,13 +24,13 @@ public class MyServiceFunctionalTest {
     @Test
     public void shouldReturnConnectedComponentCount() throws IOException {
         NeoServer server = ServerBuilder.server()
-                .withThirdPartyJaxRsPackage("org.neo4j.cc", MOUNT_POINT)
+                .withThirdPartyJaxRsPackage("org.neo4j.max_flow", MOUNT_POINT)
                 .build();
         server.start();
         populateDb(server.getDatabase().getGraph());
         RestRequest restRequest = new RestRequest(server.baseUri().resolve(MOUNT_POINT), CLIENT);
-        JaxRsResponse response = restRequest.get("service/cc/KNOWS");
-        assertEquals("2", response.getEntity());
+        JaxRsResponse response = restRequest.get("service/max_flow/1/7");
+        assertEquals("5", response.getEntity());
         server.stop();
 
     }
@@ -40,12 +40,23 @@ public class MyServiceFunctionalTest {
         try
         {
             Node personA = createPerson(db, "A");
-            Node personB = createPerson(db, "B");
-            Node personC = createPerson(db, "C");
-            Node personD = createPerson(db, "D");
-            personA.createRelationshipTo(personB, KNOWS);
-            personB.createRelationshipTo(personC, KNOWS);
-            personC.createRelationshipTo(personD, KNOWS);
+            Node personAA = createPerson(db, "AA");
+            Node personAB = createPerson(db, "AB");
+            Node personAC = createPerson(db, "AC");
+            Node personBA = createPerson(db, "BA");
+            Node personBB = createPerson(db, "BB");
+            Node personCA = createPerson(db, "CA");
+
+            connectPerson(db, personA, personAA, KNOWS, 1);
+            connectPerson(db, personA, personAB, KNOWS, 3);
+            connectPerson(db, personA, personAC, KNOWS, 1);
+            connectPerson(db, personAA, personBA, KNOWS, 1);
+            connectPerson(db, personAB, personBA, KNOWS, 1);
+            connectPerson(db, personAB, personBB, KNOWS, 2);
+            connectPerson(db, personAC, personBB, KNOWS, 1);
+            connectPerson(db, personBA, personCA, KNOWS, 2);
+            connectPerson(db, personBB, personCA, KNOWS, 3);
+
             tx.success();
         }
         finally
@@ -58,6 +69,11 @@ public class MyServiceFunctionalTest {
         Node node = db.createNode();
         node.setProperty("name", name);
         return node;
+    }
+
+    private void connectPerson(GraphDatabaseService db, Node from, Node to, RelationshipType type, Integer weight) {
+        Relationship r = from.createRelationshipTo(to, type);
+        r.setProperty("weight", weight);
     }
 
 }

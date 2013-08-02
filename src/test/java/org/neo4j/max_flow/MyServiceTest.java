@@ -1,4 +1,4 @@
-package org.neo4j.cc;
+package org.neo4j.max_flow;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.After;
@@ -47,39 +47,22 @@ public class MyServiceTest {
         try
         {
             Node personA = createPerson(db, "A");
-            Node personB = createPerson(db, "B");
-            Node personC = createPerson(db, "C");
-            Node personD = createPerson(db, "D");
-            personA.createRelationshipTo(personB, KNOWS);
-            personB.createRelationshipTo(personC, KNOWS);
-            personC.createRelationshipTo(personD, KNOWS);
-
             Node personAA = createPerson(db, "AA");
             Node personAB = createPerson(db, "AB");
             Node personAC = createPerson(db, "AC");
-            Node personAD = createPerson(db, "AD");
-            personAA.createRelationshipTo(personAB, KNOWS);
-            personAB.createRelationshipTo(personAC, KNOWS);
-            personAC.createRelationshipTo(personAD, KNOWS);
-
+            Node personBA = createPerson(db, "BA");
+            Node personBB = createPerson(db, "BB");
             Node personCA = createPerson(db, "CA");
-            Node personCB = createPerson(db, "CB");
-            Node personCC = createPerson(db, "CC");
-            Node personCD = createPerson(db, "CD");
 
-            personCA.createRelationshipTo(personCB, KNOWS);
-            personCB.createRelationshipTo(personCC, HATES);
-            personCC.createRelationshipTo(personCD, KNOWS);
-
-            Node personDA = createPerson(db, "DA");
-            Node personDB = createPerson(db, "DB");
-            Node personDC = createPerson(db, "DC");
-            Node personDD = createPerson(db, "DD");
-
-            personDA.createRelationshipTo(personDB, HATES);
-            personDB.createRelationshipTo(personDC, HATES);
-            personDC.createRelationshipTo(personDD, HATES);
-
+            connectPerson(db, personA, personAA, KNOWS, 1);
+            connectPerson(db, personA, personAB, KNOWS, 3);
+            connectPerson(db, personA, personAC, KNOWS, 1);
+            connectPerson(db, personAA, personBA, KNOWS, 1);
+            connectPerson(db, personAB, personBA, KNOWS, 1);
+            connectPerson(db, personAB, personBB, KNOWS, 2);
+            connectPerson(db, personAC, personBB, KNOWS, 1);
+            connectPerson(db, personBA, personCA, KNOWS, 2);
+            connectPerson(db, personBB, personCA, KNOWS, 3);
 
             tx.success();
         }
@@ -95,6 +78,12 @@ public class MyServiceTest {
         return node;
     }
 
+    private void connectPerson(GraphDatabaseService db, Node from, Node to, RelationshipType type, Integer weight) {
+        Relationship r = from.createRelationshipTo(to, type);
+        r.setProperty("weight", weight);
+    }
+
+
     @After
     public void tearDown() throws Exception {
         db.shutdown();
@@ -103,7 +92,7 @@ public class MyServiceTest {
 
     @Test
     public void shouldGetConnectedComponentsCount() throws IOException {
-        assertEquals("8", service.getConnectedComponentsCount("KNOWS", db));
+        assertEquals("5", service.getMaxFlow(1L, 7L, db));
     }
 
 
